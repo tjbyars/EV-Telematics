@@ -5,9 +5,9 @@ import matplotlib.pyplot as plt
 df = pd.read_csv('telematics_data.csv')
 
 # Calculate average speed, average carbon emissions, and total distance travelled for each vehicle
-avg_speed_per_vehicle = df.groupby('Reg Number')['Speed'].mean()
-avg_carbon_emissions_per_vehicle = df.groupby('Reg Number')['Carbon Emissions'].mean()
-total_distance_per_vehicle = df.groupby('Reg Number')['Distance'].sum()
+avg_speed_per_vehicle = df.groupby('reg_number')['current_speed'].mean()
+avg_carbon_emissions_per_vehicle = df.groupby('reg_number')['carbon_emissions'].mean()
+total_distance_per_vehicle = df.groupby('reg_number')['distance'].sum()
 
 # Plot average speed of each vehicle
 plt.figure(figsize=(10, 6))
@@ -43,35 +43,22 @@ plt.xticks(rotation=45)
 plt.grid(axis='y', linestyle='--', alpha=0.7)
 plt.tight_layout()
 plt.savefig('total_distance_per_vehicle.png')  # Save as PNG
-plt.close()
 
 # Additional analysis/insights
 # Example: Plotting distribution of fuel efficiency
 plt.figure(figsize=(10, 6))
-df['Fuel Efficiency'].hist(bins=20, color='salmon', edgecolor='black')
+df['fuel_efficiency'].hist(bins=20, color='salmon', edgecolor='black')
 plt.title('Distribution of Fuel Efficiency')
 plt.xlabel('Fuel Efficiency (km/L)')
 plt.ylabel('Frequency')
 plt.grid(axis='y', linestyle='--', alpha=0.7)
 plt.tight_layout()
 plt.savefig('fuel_efficiency_distribution.png')  # Save as PNG
-plt.close()
-
-# Plot histogram of fuel efficiency
-plt.figure(figsize=(10, 6))
-plt.hist(df['Fuel Efficiency'], bins=20, color='salmon', edgecolor='black')
-plt.title('Distribution of Fuel Efficiency')
-plt.xlabel('Fuel Efficiency (km/L)')
-plt.ylabel('Frequency')
-plt.grid(axis='y', linestyle='--', alpha=0.7)
-plt.tight_layout()
-plt.savefig('fuel_efficiency_distribution.png')  # Save as PNG
-plt.close()
 
 # Time Series of Speed for Vehicle 001
-vehicle_001_data = df[df['Reg Number'] == '001']
+vehicle_001_data = df[df['reg_number'] == '001']
 plt.figure(figsize=(10, 6))
-plt.plot(vehicle_001_data['Timestamp'], vehicle_001_data['Speed'], color='orange')
+plt.plot(vehicle_001_data['timestamp'], vehicle_001_data['current_speed'], color='orange')
 plt.title('Time Series of Speed for Vehicle 001')
 plt.xlabel('Timestamp')
 plt.ylabel('Speed (km/h)')
@@ -82,7 +69,7 @@ plt.savefig('speed_time_series_vehicle_001.png')
 
 # Time Series of Carbon Emissions for Vehicle 001
 plt.figure(figsize=(10, 6))
-plt.plot(vehicle_001_data['Timestamp'], vehicle_001_data['Carbon Emissions'], color='green')
+plt.plot(vehicle_001_data['timestamp'], vehicle_001_data['carbon_emissions'], color='green')
 plt.title('Time Series of Carbon Emissions for Vehicle 001')
 plt.xlabel('Timestamp')
 plt.ylabel('Carbon Emissions (kg)')
@@ -91,23 +78,9 @@ plt.xticks(rotation=45)
 plt.tight_layout()
 plt.savefig('carbon_emissions_time_series_vehicle_001.png')
 
-# Calculate the correlation matrix
-corr_matrix = df[['Speed', 'Carbon Emissions']].corr()
-
-# Plot the correlation matrix
-plt.figure(figsize=(8, 6))
-plt.imshow(corr_matrix, cmap='coolwarm', interpolation='nearest')
-plt.colorbar(label='Correlation')
-plt.title('Correlation Matrix of Speed and Carbon Emissions')
-plt.xticks(range(len(corr_matrix.columns)), corr_matrix.columns, rotation=45)
-plt.yticks(range(len(corr_matrix.columns)), corr_matrix.columns)
-plt.tight_layout()
-plt.savefig('correlation_matrix_speed_carbon_emissions.png')  # Save as PNG
-plt.close()
-
 # Scatter Plot comparing Percent of Time with Engine On/Off to Total Carbon Emissions for each Vehicle
-engine_on_percentage = df.groupby('Reg Number')['Ignition On/Off'].apply(lambda x: (x == 'On').mean() * 100)
-total_carbon_emissions = df.groupby('Reg Number')['Carbon Emissions'].sum()
+engine_on_percentage = df.groupby('reg_number')['ignition'].apply(lambda x: (x == 'On').mean() * 100)
+total_carbon_emissions = df.groupby('reg_number')['carbon_emissions'].sum()
 plt.figure(figsize=(10, 6))
 plt.scatter(engine_on_percentage, total_carbon_emissions, color='red', alpha=0.5)
 plt.title('Engine On/Off Percentage vs Total Carbon Emissions for each Vehicle')
@@ -121,7 +94,7 @@ plt.savefig('engine_on_percentage_vs_carbon_emissions.png')
 background_img = plt.imread("map.png")
 plt.figure(figsize=(10, 8))
 plt.imshow(background_img, extent=[-1.93, -1.86, 52.46, 52.50])
-plt.scatter(df['Longitude'], df['Latitude'], c='red', alpha=0.5)
+plt.scatter(df['longitude'], df['latitude'], c='red', alpha=0.5)
 plt.title('Heatmap of Vehicle Locations')
 plt.xlabel('Longitude')
 plt.ylabel('Latitude')
