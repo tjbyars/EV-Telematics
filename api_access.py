@@ -6,11 +6,33 @@ dynamodb = boto3.client('dynamodb')
 # Specify the table name
 table_name = 'EV-Telematics'
 
-# Prompt the user to enter the ID they want to query
-id_value = input("Enter the ID you want to query: ")
+# Function to get the maximum ID number from the database
+def get_max_id_number():
+    response = dynamodb.scan(
+        TableName=table_name,
+        Select='COUNT',  # Count the number of items in the table
+    )
+    return response['Count']
 
-# Convert id_value to integer
-id_value = int(id_value)
+# Function to validate the ID input
+def validate_id_input(input_str, max_id):
+    try:
+        id_value = int(input_str)
+        if 1 <= id_value <= max_id:
+            return id_value
+        else:
+            raise ValueError(f"ID value must be in the range of 1 to {max_id} inclusive.")
+    except ValueError:
+        raise ValueError(f"Invalid input. Please enter a valid integer value between 1 and {max_id}.")
+
+# Get the maximum ID number from the database
+max_id_number = get_max_id_number()
+
+# Prompt the user to enter the ID they want to query
+id_input = input(f"Enter the ID you want to query (1-{max_id_number} inclusive): ")
+
+# Validate the ID input
+id_value = validate_id_input(id_input, max_id_number)
 
 # Define the key condition expression for the query
 key_condition_expression = 'id = :idval'
