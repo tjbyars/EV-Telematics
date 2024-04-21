@@ -47,6 +47,7 @@ plt.xticks(rotation=45)
 plt.grid(axis='y', linestyle='--', alpha=0.7)
 plt.tight_layout()
 plt.savefig('total_distance_per_vehicle.png')  # Save as PNG
+plt.close()
 
 # Plot total carbon emissions of each vehicle
 plt.figure(figsize=(10, 6))
@@ -58,17 +59,19 @@ plt.xticks(rotation=45)
 plt.grid(axis='y', linestyle='--', alpha=0.7)
 plt.tight_layout()
 plt.savefig('total_carbon_emissions_per_vehicle.png')  # Save as PNG
+plt.close()
 
 # Plot fuel efficiency of each vehicle
 plt.figure(figsize=(10, 6))
-avg_fuel_efficiency_per_vehicle.plot(kind='bar', color='lightblue')
-plt.title('Average Fuel Efficiency of Each Vehicle')
+df.groupby('reg_number')['fuel_efficiency'].mean().plot(kind='bar', color='lightgreen')
+plt.title('Fuel Efficiency of Each Vehicle')
 plt.xlabel('Vehicle Registration Number')
-plt.ylabel('Average Fuel Efficiency (km/L)')
+plt.ylabel('Fuel Efficiency (km/L)')
 plt.xticks(rotation=45)
 plt.grid(axis='y', linestyle='--', alpha=0.7)
 plt.tight_layout()
-plt.savefig('avg_fuel_efficiency_per_vehicle.png')  # Save as PNG
+plt.savefig('fuel_efficiency_of_each_vehicle.png')  # Save as PNG
+plt.close()
 
 # Additional analysis/insights
 # Example: Plotting distribution of fuel efficiency
@@ -80,6 +83,7 @@ plt.ylabel('Frequency')
 plt.grid(axis='y', linestyle='--', alpha=0.7)
 plt.tight_layout()
 plt.savefig('fuel_efficiency_distribution.png')  # Save as PNG
+plt.close()
 
 # Scatter Plot comparing Percent of Time with Engine On/Off to Total Carbon Emissions for each Vehicle
 engine_on_percentage = df.groupby('reg_number')['ignition'].apply(lambda x: (x == 'On').mean() * 100)
@@ -91,6 +95,7 @@ plt.ylabel('Total Carbon Emissions (kg)')
 plt.grid(axis='both', linestyle='--', alpha=0.7)
 plt.tight_layout()
 plt.savefig('engine_on_percentage_vs_carbon_emissions.png')
+plt.close()
 
 # Plot heatmap of vehicle locations
 background_img = plt.imread("map.png")
@@ -103,6 +108,7 @@ plt.ylabel('Latitude')
 plt.grid(axis='both', linestyle='--', alpha=0.7)
 plt.tight_layout()
 plt.savefig('vehicle_locations_heatmap.png')
+plt.close()
 
 # Calculate carbon emissions by hour
 df['hour'] = df['timestamp'].dt.hour
@@ -134,4 +140,17 @@ plt.xticks(rotation=45)
 plt.grid(axis='y', linestyle='--', alpha=0.7)
 plt.tight_layout()
 plt.savefig('carbon_emissions_by_day.png')  # Save as PNG
+plt.close()
+
+# Plot total distance vs total carbon emissions per vehicle
+total_distance_per_vehicle = df.groupby('reg_number')['distance'].sum()
+total_carbon_emissions_per_vehicle = df.groupby('reg_number')['carbon_emissions'].sum()
+plt.figure(figsize=(10, 6))
+plt.scatter(total_distance_per_vehicle, total_carbon_emissions_per_vehicle, color='purple', alpha=0.7)
+plt.title('Total Distance vs Total Carbon Emissions per Vehicle')
+plt.xlabel('Total Distance Travelled (km)')
+plt.ylabel('Total Carbon Emissions (kg)')
+plt.grid(axis='both', linestyle='--', alpha=0.7)
+plt.tight_layout()
+plt.savefig('total_distance_vs_carbon_emissions_per_vehicle.png')  # Save as PNG
 plt.close()
