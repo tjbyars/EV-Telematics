@@ -122,7 +122,7 @@ plt.close()
 
 # Calculate carbon emissions by day
 df['day'] = df['timestamp'].dt.date
-carbon_emissions_by_day = df.groupby('day')['carbon_emissions'].sum()
+carbon_emissions_by_day = df.groupby(df['timestamp'].dt.date)['carbon_emissions'].sum()
 
 # Plot carbon emissions by day
 plt.figure(figsize=(10, 6))
