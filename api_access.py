@@ -9,12 +9,15 @@ table_name = 'EV-Telematics'
 # Prompt the user to enter the ID they want to query
 id_value = input("Enter the ID you want to query: ")
 
+# Convert id_value to integer
+id_value = int(id_value)
+
 # Define the key condition expression for the query
 key_condition_expression = 'id = :idval'
 
 # Define the expression attribute values for the query
 expression_attribute_values = {
-    ':idval': {'S': id_value}
+    ':idval': {'N': str(id_value)}  # Convert id_value to string ('N')
 }
 
 # Define the projection expression to only include the 'reg_number' attribute in the result
