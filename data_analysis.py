@@ -154,3 +154,37 @@ plt.grid(axis='both', linestyle='--', alpha=0.7)
 plt.tight_layout()
 plt.savefig('total_distance_vs_carbon_emissions_per_vehicle.png')  # Save as PNG
 plt.close()
+
+# Filter dataset for the week of April 1st to April 7th
+start_date = '2024-04-01'
+end_date = '2024-04-07'
+week_data = df[(df['timestamp'] >= start_date) & (df['timestamp'] <= end_date)]
+
+# Group data by hourly intervals and calculate total carbon emissions
+hourly_carbon_emissions = week_data.resample('H', on='timestamp')['carbon_emissions'].sum()
+
+# Plot the energy curve (carbon emissions over time)
+plt.figure(figsize=(12, 6))
+hourly_carbon_emissions.plot(color='blue')
+plt.title('Energy Curve: Carbon Emissions Over Time (April 1st - April 7th)')
+plt.xlabel('Time')
+plt.ylabel('Total Carbon Emissions (kg)')
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+plt.tight_layout()
+plt.savefig('energy_curve_carbon_emissions.png')  # Save as PNG
+plt.close()
+
+# Group data by hour of the day and calculate average carbon emissions
+hourly_avg_carbon_emissions = df.groupby(df['timestamp'].dt.hour)['carbon_emissions'].mean()
+
+# Plot the energy curve variation by hour of the day
+plt.figure(figsize=(10, 6))
+hourly_avg_carbon_emissions.plot(kind='bar', color='green')
+plt.title('Energy Curve Variation by Hour of the Day')
+plt.xlabel('Hour of the Day')
+plt.ylabel('Average Carbon Emissions (kg)')
+plt.xticks(rotation=0)
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+plt.tight_layout()
+plt.savefig('energy_curve_variation_by_hour.png')  # Save as PNG
+plt.close()
