@@ -25,18 +25,6 @@ plt.tight_layout()
 plt.savefig('avg_speed_per_vehicle.png')  # Save as PNG
 plt.close()
 
-# Plot average carbon emissions of each vehicle
-plt.figure(figsize=(10, 6))
-avg_carbon_emissions_per_vehicle.plot(kind='bar', color='lightgreen')
-plt.title('Average Carbon Emissions of Each Vehicle')
-plt.xlabel('Vehicle Registration Number')
-plt.ylabel('Average Carbon Emissions (kg)')
-plt.xticks(rotation=45)
-plt.grid(axis='y', linestyle='--', alpha=0.7)
-plt.tight_layout()
-plt.savefig('avg_carbon_emissions_per_vehicle.png')  # Save as PNG
-plt.close()
-
 # Plot total distance travelled by each vehicle
 plt.figure(figsize=(10, 6))
 total_distance_per_vehicle.plot(kind='bar', color='orange')
@@ -110,9 +98,15 @@ plt.tight_layout()
 plt.savefig('vehicle_locations_heatmap.png')
 plt.close()
 
+# Convert 'timestamp' column to datetime format
+df['timestamp'] = pd.to_datetime(df['timestamp'])
+
 # Calculate carbon emissions by hour
 df['hour'] = df['timestamp'].dt.hour
 carbon_emissions_by_hour = df.groupby('hour')['carbon_emissions'].sum()
+
+# Reindex to include all hours of the day
+carbon_emissions_by_hour = carbon_emissions_by_hour.reindex(range(24), fill_value=0)
 
 # Plot carbon emissions by hour
 plt.figure(figsize=(10, 6))
@@ -187,4 +181,23 @@ plt.xticks(rotation=0)
 plt.grid(axis='y', linestyle='--', alpha=0.7)
 plt.tight_layout()
 plt.savefig('energy_curve_variation_by_hour.png')  # Save as PNG
+plt.close()
+
+# Calculate total distance and total carbon emissions per vehicle
+total_distance_per_vehicle = df.groupby('reg_number')['distance'].sum()
+total_carbon_emissions_per_vehicle = df.groupby('reg_number')['carbon_emissions'].sum()
+
+# Calculate ratio of total distance to total carbon emissions for each vehicle
+ratio_distance_to_carbon_emissions = total_distance_per_vehicle / total_carbon_emissions_per_vehicle
+
+# Plot ratio of total distance to total carbon emissions for each vehicle
+plt.figure(figsize=(10, 6))
+ratio_distance_to_carbon_emissions.plot(kind='bar', color='purple')
+plt.title('Ratio of Total Distance to Total Carbon Emissions per Vehicle')
+plt.xlabel('Vehicle Registration Number')
+plt.ylabel('Ratio (Distance / Carbon Emissions)')
+plt.xticks(rotation=45)
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+plt.tight_layout()
+plt.savefig('distance_to_carbon_emissions_ratio_per_vehicle.png')  # Save as PNG
 plt.close()
