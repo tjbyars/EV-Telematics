@@ -161,7 +161,7 @@ end_date = '2024-04-07'
 week_data = df[(df['timestamp'] >= start_date) & (df['timestamp'] <= end_date)]
 
 # Group data by hourly intervals and calculate total carbon emissions
-hourly_carbon_emissions = week_data.resample('H', on='timestamp')['carbon_emissions'].sum()
+hourly_carbon_emissions = week_data.resample('h', on='timestamp')['carbon_emissions'].sum()
 
 # Plot the energy curve (carbon emissions over time)
 plt.figure(figsize=(12, 6))
